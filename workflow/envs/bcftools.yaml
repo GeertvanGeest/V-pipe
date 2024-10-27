@@ -3,4 +3,4 @@ channels:
   - bioconda
 dependencies:
   - bcftools = 1.13
-  - cyvcf2 = 0.30.11
+  - cyvcf2 = 0.31.1

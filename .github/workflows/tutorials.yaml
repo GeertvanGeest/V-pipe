@@ -22,7 +22,7 @@ jobs:
       - run: |
           cd docs
           mkdir -p _test_tutorials
-          python extract_bash_code.py -o _test_tutorials *.md
+          python extract_bash_code.py -o _test_tutorials documentation/*.md tutorials/*.md
           cd _test_tutorials
           bash installation.sh
           bash tutorial_hiv.sh

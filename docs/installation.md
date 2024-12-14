@@ -25,7 +25,7 @@ The present tutorial will show you how to install V-pipe and the dependencies re
 Download the install script and run it with the following parameters:
 
 ```bash
-curl -O 'https://raw.githubusercontent.com/cbg-ethz/V-pipe/master/utils/quick_install.sh'
+curl -O 'https://raw.githubusercontent.com/GeertvanGeest/V-pipe/gsod-rtd/utils/quick_install.sh'
 bash quick_install.sh -p vp-analysis -w work
 
 ```

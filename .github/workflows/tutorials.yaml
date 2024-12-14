@@ -2,7 +2,7 @@ name: Run tutorials
 
 on:
   push:
-    branches: master
+    branches: gsod-rtd
   pull_request:
     branches: master
 
@@ -11,22 +11,11 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 jobs:
-  installer:
+  run-tutorials:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash -l {0}
-
     steps:
-      - name: Free space
-        # HACK fixes 'No space left on device'
-        # see: https://github.com/orgs/community/discussions/25678#discussioncomment-5242449
-        # NOTE we don't use those, we use conda for everything anyway
-        run: rm -rf /opt/hostedtoolcache
-
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
             sparse-checkout: |
                 docs

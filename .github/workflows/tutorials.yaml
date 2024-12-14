@@ -3,12 +3,6 @@ name: Run tutorials
 on:
   push:
     branches: gsod-rtd
-  pull_request:
-    branches: master
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 jobs:
   run-tutorials:
@@ -22,113 +16,13 @@ jobs:
                 tests
             sparse-checkout-cone-mode: false
             lfs: false
-
-      - name: Install conda environment dependencies
-        uses: conda-incubator/setup-miniconda@v2
+      - uses: actions/setup-python@v5
         with:
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          mamba-version: "*"
-          channels: conda-forge,bioconda
-          channel-priority: strict
-          activate-environment: JupyText
-          auto-update-conda: true
-          environment-file: tests/conda_tutorials_env.yaml
-
-      - name: Setup Jupyter kernel
-        run: |
-          python -m ipykernel install --user
-
-      - name: Run installation notebooks
-        working-directory: ./docs
-        run: ./convert.sh --branch *_install.md
-
-      - name: Create V-pipe installation archive
-        # HACK this acceleraters upload while preserving Unix-specifics (case sensitivity, file attributes).
-        run: tar --zstd -cvf vpipeinstallation.tar.zst ./docs/vp-analysis
-
-      - name: Keep installation
-        uses: actions/upload-artifact@v3
-        with:
-          name: VPipeInstallation
-          path: vpipeinstallation.tar.zst
-          if-no-files-found: error
-
-      - name: Save notebooks
-        uses: actions/upload-artifact@v3
-        with:
-          name: JupyterNotebooks
-          path: ./docs/*.ipynb
-
-
-  tutorial:
-    needs: installer
-
-    strategy:
-      max-parallel: 5
-      fail-fast: false
-      matrix:
-         virus: ["hiv", "sarscov2"]
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash -l {0}
-
-    steps:
-      - name: Free space
-        # HACK fixes 'No space left on device'
-        # see: https://github.com/orgs/community/discussions/25678#discussioncomment-5242449
-        # NOTE we don't use those, we use conda for everything anyway
-        run: rm -rf /opt/hostedtoolcache
-
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-            sparse-checkout: |
-                docs
-                tests
-            sparse-checkout-cone-mode: false
-            lfs: false
-
-      - name: Reuse installation
-        uses: actions/download-artifact@v2
-        with:
-            name: VPipeInstallation
-
-      - name: Extract V-pipe installation archive
-        run: tar --zstd -xvf vpipeinstallation.tar.zst
-
-      - name: Install conda environment dependencies
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          python-version: "3.11"
-          mamba-version: "*"
-          channels: conda-forge,bioconda
-          channel-priority: strict
-          activate-environment: JupyText
-          auto-update-conda: true
-          environment-file: tests/conda_tutorials_env.yaml
-
-      - name: Setup Jupyter kernel
-        run: |
-          python -m ipykernel install --user
-
-      - name: Run analysis notebooks
-        working-directory: ./docs
-        run: ./convert.sh --branch tutorial*_${{ matrix.virus }}.md
-
-      - name: Save notebooks
-        uses: actions/upload-artifact@v3
-        with:
-          name: JupyterNotebooks
-          path: ./docs/*.ipynb
-
-      # - name: Publish
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./docs
+          python-version: '3.13' 
+      - run: |
+          cd docs
+          mkdir -p _test_tutorials
+          python extract_bash_code.py -o _test_tutorials *.md
+          cd _test_tutorials
+          bash installation.sh
+          bash tutorial_hiv.sh

@@ -25,7 +25,7 @@ The present tutorial will show you how to install V-pipe and the dependencies re
 Download the install script and run it with the following parameters:
 
 ```bash
-curl -O 'https://raw.githubusercontent.com/GeertvanGeest/V-pipe/gsod-rtd/utils/quick_install.sh'
+curl -O 'https://raw.githubusercontent.com/GeertvanGeest/V-pipe/refs/heads/gsod-rtd/utils/quick_install.sh'
 bash quick_install.sh -p vp-analysis -w work
 
 ```
@@ -41,7 +41,7 @@ V-pipe uses the [Bioconda](https://bioconda.github.io/) bioinformatics software 
 
 ```bash
 ## not run
-curl -O 'https://raw.githubusercontent.com/GeertvanGeest/V-pipe/gsod-rtd/utils/quick_install.sh'
+curl -O 'https://raw.githubusercontent.com/GeertvanGeest/V-pipe/refs/heads/gsod-rtd/utils/quick_install.sh'
 bash quick_install.sh -p vp-analysis -w work
 ```
 
